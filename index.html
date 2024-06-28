@@ -1,0 +1,1239 @@
+
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMULADO CLF-C02</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #05182c;
+            color: white;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        #finalScore {
+            font-size: 40px;
+            color: #F4D35E;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        #finalMessage {
+            font-size: 24px;
+            color: #F4D35E;
+            text-align: center;
+            margin-top: 20px;
+        }
+        #restartButton {
+            flex-basis: 100%;
+            background-color: #F4D35E;
+            color: #000;
+            border: none;
+            padding: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 20px;
+            margin-top: 20px;
+            width: 50%;
+        }
+        #title {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        #developer {
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        #startScreen, #quizContainer, #finalScreen {
+            width: 80%;
+            max-width: 600px;
+            background-color: #0a062e;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+        .start-button {
+            font-size: 24px;
+            padding: 15px 30px;
+            background-color: #eb9b07;
+            color: #000;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            margin: 10px;
+        }
+        .start-button:hover {
+            background-color: #E8C14E;
+            transform: scale(1.05);
+        }
+        #randomQuestionsInfo {
+            font-size: 18px;
+            color: #F4D35E;
+        }
+        .question-container, .answer-container {
+            background-color: #834D9B;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .answer-container.correct {
+            background-color: #00008B;
+        }
+        .answer-container.incorrect {
+            background-color: #ff0000;
+        }
+        .options-container, .answer-btn-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+        .option {
+            flex-basis: calc(50% - 10px);
+            padding: 20px;
+            background-color: #1E5F74;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            color: white;
+            font-weight: bold;
+            outline: none;
+        }
+        .option.selected, .option:hover {
+            background-color: #F4D35E;
+            color: #5D3E8C;
+            transform: scale(1.05);
+        }
+        .next-question-btn, #confirmButton, #restartQuizBtn {
+            flex-basis: calc(33.33% - 10px);
+            margin: 5px;
+            padding: 20px;
+            background-color: #000;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .next-question-btn:hover, #confirmButton:hover, #restartQuizBtn:hover {
+            background-color: #F4D35E;
+            color: #000;
+        }
+        #progressContainer {
+            width: 100%;
+            background-color: #ddd;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        #progressBar {
+            height: 20px;
+            background-color: #4CAF50;
+            width: 0%;
+            border-radius: 5px;
+        }
+        .hidden { display: none; }
+        .correct-answer { font-weight: bold; }
+        @media (max-width: 500px) {
+            .option, .next-question-btn, #confirmButton, #restartQuizBtn {
+                flex-basis: 100%;
+            }
+        }
+        #developerFooter {
+            font-size: 12px;
+            margin-top: 10px;
+        }
+        #timer {
+            font-size: 18px;
+            color: #F4D35E;
+            margin-bottom: 10px;
+        }
+        #questionDetails {
+            margin-top: 20px;
+            text-align: left;
+        }
+        .question-count {
+            display: block; 
+            font-size: 0.75em; 
+        }
+        .disclaimer {
+            font-size: 0.75em; 
+            margin-top: 20px; 
+            text-align: center; 
+            max-width: 600px; 
+            margin-left: auto; 
+            margin-right: auto; 
+        }
+
+    </style>
+</head>
+<body>
+    <div id="startScreen">
+        <div id="title">SIMULADO CLF-C02</div>
+        <div id="developer"><a href="https://www.linkedin.com/in/fabriciocosta85/" target="_blank" style="color: #F4D35E;">Desenvolvido por Fabrício Félix</a></div>
+        <p id="intro">Bem-vindo ao simulado para o exame AWS Cloud Practitioner (CLF-C02)! Aqui você poderá testar os seus conhecimentos sempre que quiser! Por favor, selecione o tipo de quiz que deseja realizar. </p>
+        <button class="start-button" onclick="startQuiz(35, 40)">SIMPLES<br><span class="question-count">35 questões</span></button>
+        <button class="start-button" onclick="startQuiz(65, 90)">COMPLETO<br><span class="question-count">65 questões</span></button>
+        <button class="start-button" onclick="startQuiz(90, 120)">EXTRA<br><span class="question-count">90 questões</span></button>        
+        <div class="disclaimer">
+            Nota: Este projeto de simulado é uma iniciativa independente e não tem afiliação, endosso ou qualquer relação oficial com a Amazon Web Services (AWS). Foi desenvolvido com o objetivo de fornecer recursos educacionais para indivíduos que estão se preparando para o exame AWS Cloud Practitioner (CLF-C02) e não deve ser considerado como substituto dos materiais oficiais de estudo fornecidos pela AWS.
+        </div>
+    </div>
+
+    <div id="quizContainer" class="hidden">
+        <div id="timer">Tempo restante: <span id="timeLeft"></span></div>
+        <div id="progressContainer">
+            <div id="progressBar"></div>
+        </div>
+        <div id="progressText" style="margin: 10px 0;"></div>
+        
+        <div class="question-container" id="questionText"></div>
+        <div class="options-container" id="optionsContainer"></div>
+        <div id="answerScreen" class="hidden">
+            <div class="answer-container" id="answerExplanation">
+                <p id="feedbackText"></p>
+                <p id="correctAnswerText" class="correct-answer"></p>
+            </div>
+            <div class="answer-btn-container">
+                <button class="next-question-btn" id="previousQuestionBtn" onclick="loadPreviousQuestion()"><<< Anterior</button>
+                
+                <button class="next-question-btn" onclick="loadNextQuestion()">Próxima >>></button>
+            </div>
+        </div>
+        <div id="developer"><a href="https://www.linkedin.com/in/fabriciocosta85/" target="_blank" style="color: #F4D35E;">Desenvolvido por Fabrício Félix</a></div>
+    </div>
+
+    <div id="finalScreen" class="hidden">
+        <div id="finalScore"></div>
+        <div id="finalMessage"></div>
+        <div>
+            <label for="questionReview">Conferir questões:</label>
+            <select id="questionReview" onchange="showQuestionReview(this.value)">
+                <option value="">Selecione uma opção</option>
+                <option value="incorrect">Questões incorretas</option>
+                <option value="correct">Questões corretas</option>
+            </select>
+        </div>
+        <div id="questionDetails"></div>
+        <button id="restartButton" onclick="restartQuiz()">TENTAR DE NOVO</button>
+        <div id="developer"><a href="https://www.linkedin.com/in/fabriciocosta85/" target="_blank" style="color: #F4D35E;">Desenvolvido por Fabrício Félix_Ajustado por Evair S A</a></div>
+    </div>
+
+    <script>
+        let currentQuestionIndex = 0;
+        let correctAnswersCount = 0;
+        let questions = [
+  {
+    question: "1. Estamos estudando uma forma de barrar ameaças na sua infraestrutura e você precisa verificar continuamente arquivos que possam ter algum malware criando comportamento suspeito em sua cargas de trabalho em instâncias ou contêineres. Qual é o serviço que utiliza inteligência artificial para realizar esse tipo de verificação em dados no EBS e em outros serviços da sua plataforma?",
+    options: [
+      "A. AWS Malicious",
+      "B. Amazon GuardDuty",
+      "C. Amazon Shield",
+      "D. Amazon Macie",
+    ],
+    correctAnswer: "B. Amazon GuardDuty",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "2. Sua empresa possui contratado o plano de suporte do tipo AWS Business Support. Qual dos tipos de serviço abaixo está disponível neste plano?",
+    options: [
+      "A. AWS Technical Account Manager (TAM)",
+      "B. AWS DDoS Response Team (DRT)",
+      "C. API do AWS Support",
+      "D. AWS Support Concierge",
+    ],
+    correctAnswer: "A. AWS Technical Account Manager (TAM)",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "3. Qual serviço da AWS é especializado em processar e analisar automaticamente texto não estruturado, identificando informações como sentimentos, entidades, tópicos e idiomas?",
+    options: [
+      "A. AWS Transcribe",
+      "B. AWS Comprehend",
+      "C. Amazon Pinpoint",
+      "D. Amazon Elastic Container Service (ECS) Anywhere",
+    ],
+    correctAnswer: "A. AWS Transcribe",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "4. Qual serviço da AWS é projetado para ajudar as organizações a configurar e implantar um ambiente de várias contas da AWS com as melhores práticas recomendadas para segurança, conformidade e governança, oferecendo uma visão unificada de suas contas e recursos na nuvem?",
+    options: [
+      "A. AWS Account Orchestrator",
+      "B. AWS Multi-Account Management",
+      "C. AWS Control Tower",
+      "D. AWS Organizations",
+    ],
+    correctAnswer: "D. AWS Organizations",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "5. Como Arquiteto de Valor Cloud, você está buscando uma solução para melhorar a disponibilidade e a latência de suas aplicações, distribuindo o tráfego de forma eficaz entre várias regiões da AWS. Qual serviço da AWS oferece essa funcionalidade?",
+    options: [
+      "A. AWS Global Accelerator",
+      "B. AWS VPN",
+      "C. AWS Audit Manager",
+      "D. AWS Directory Service",
+    ],
+    correctAnswer: "D. AWS Directory Service",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "6. O time de desenvolvimento de projetos deseja gerenciar as atividades desde a concepção até a entrega do software na plataforma. Qual serviço permite esse tipo de controle?",
+    options: [
+      "A. AWS CodeCommit",
+      "B. AWS CodeBuild",
+      "C. AWS CodeStar",
+      "D. AWS CodeDeploy",
+    ],
+    correctAnswer: "A. AWS CodeCommit",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "7. Qual plano de suporte da AWS te dá acesso a um Gerente Técnico de Contas (TAM - Technical Account Manager) da AWS?",
+    options: [
+      "A. Developer",
+      "B. Basic",
+      "C. Business",
+      "D. Enterprise",
+    ],
+    correctAnswer: "C. Business",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "8. Para manter uma arquitetura híbrida, onde você precisa integrar sistemas desacoplados, legados e baseados em RabbitMQ com serviços desacoplados na AWS Cloud. Qual o serviço que você pode utiliza?",
+    options: [
+      "A. Amazon Simple Notiﬁcation Service (Amazon SNS)",
+      "B. Kafka",
+      "C. Amazon MQ",
+      "D. Amazon Simple Queue Service (SQS)",
+    ],
+    correctAnswer: "D. Amazon Simple Queue Service (SQS)",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "9. Você trabalha em uma empresa que está em um processo de migração para Cloud. É interesse da empresa migrar todos os recursos utilizados pelo time de desenvolvedores, inclusive o repositório onde é armazenado o código-fonte das aplicações. Qual serviço foi criado para que desenvolvedores possam utilizar para substituir o repositório de código-fonte atual?",
+    options: [
+      "A. AWS CodePipeline",
+      "B. AWS CodeBuild",
+      "C. AWS CodeCommit",
+      "D. AWS CodeArtifact",
+    ],
+    correctAnswer: "A. AWS CodePipeline",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "10. Ao criar uma ou mais instâncias EC2 dentro de uma VPC, é necessário associá-las a um Security Group. Qual é o propósito desse serviço?",
+    options: [
+      "A. Controlar o tráfego de entrada e saída de dados das instâncias agrupadas",
+      "B. Agrupar as instâncias para a gestão de custos",
+      "C. Manter uma rede virtual entre as zonas de disponibilidade",
+      "D. Garantir que as instâncias fiquem seguras contra catástrofes naturais",
+    ],
+    correctAnswer: "C. Manter uma rede virtual entre as zonas de disponibilidade",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "11. A Vercoza's Corp contratou o cientista de dados e precisa preparar, construir, treinar e implantar modelos de machine learning na AWS. Qual serviço pode ser utilizado?",
+    options: [
+      "A. Com as ferramentas e recursos do Amazon SageMaker",
+      "B. Com as ferramentas e recursos do Amazon Redshift",
+      "C. Com as ferramentas e recursos do Amazon QuickSight",
+      "D. Com as ferramentas e recursos do Amazon EMR",
+    ],
+    correctAnswer: "D. Com as ferramentas e recursos do Amazon EMR",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "12. Qual das opções a seguir é uma vantagem do faturamento consolidado na AWS?",
+    options: [
+      "A. Qualificação de preços por volume",
+      "B. Delegar acesso a usuários",
+      "C. Várias faturas para cada conta",
+      "D. Eliminação da necessidade de marcar recursos",
+    ],
+    correctAnswer: "D. Eliminação da necessidade de marcar recursos",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "13. Como é possível elaborar uma análise gráfica detalhada dos custos associados à utilização de um banco de dados no Amazon RDS?",
+    options: [
+      "A. Através da interface do AWS Cost Explorer",
+      "B. Através da interface do AWS Price",
+      "C. Através da interface do AWS Budget",
+      "D. Através da interface do AWS Pricing Calculator",
+    ],
+    correctAnswer: "C. Através da interface do AWS Budget",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "14. A Vercoza's Corp precisa integrar APIs de um software construído com Salesforce a APIs de aplicações de negócio. Qual é a maneira mais rápida de realizar essa integração?",
+    options: [
+      "A. Amazon EventBridge",
+      "B. Amazon Simple Notiﬁcation Service (Amazon SNS)",
+      "C. Amazon AppFlow",
+      "D. AWS Database Migration Service (DMS)",
+    ],
+    correctAnswer: "A. Amazon EventBridge",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "15. Você foi contratado como Arquiteto de Soluções na Vercoza's Corp e está encarregado de gerenciar a criação de um novo serviço para aprimorar nossos sistemas de busca por meio de IA, permitindo aos usuários pesquisar e encontrar informações de maneira rápida e precisa em documentos e recursos de conhecimento da organização. Qual serviço da AWS oferece essa capacidade?",
+    options: [
+      "A. AWS Amplify",
+      "B. Amazon Kendra",
+      "C. AWS IoT Core",
+      "D. Amazon Lightsail",
+    ],
+    correctAnswer: "D. Amazon Lightsail",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "16. Quais recomendações estão incluídas nas verificações do AWS Trusted Advisor? (Selecione duas respostas.)",
+    options: [
+      "A. Performance",
+      "B. Interrupções de produtos da AWS para serviços",
+      "C. Segurança",
+      "D. Patches de software disponíveis para instâncias Amazon EC2",
+      "E. Número de usuários na conta",
+    ],
+    correctAnswer: [
+      "B. Interrupções de produtos da AWS para serviços",
+      "E. Número de usuários na conta",
+    ],
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: true
+  },
+  {
+    question: "17. uando falamos de AWS, qual a característica ajuda a definir o que é a infraestrutura Global da AWS?",
+    options: [
+      "A. Os Datacenters da AWS contam com vários pontos de presença (Edge Locations)",
+      "B. As AZs (Zonas de Disponibilidade), podem possuir vários Datacenters",
+      "C. As Regiões da AWS possuem vários caches de presença regionais",
+      "D. Os pontos de presença (Edge Locations) possuem várias Regiões",
+    ],
+    correctAnswer: "A. Os Datacenters da AWS contam com vários pontos de presença (Edge Locations)",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "18. Qual serviço AWS é empregado para criar, programar e gerenciar ETL (Extração, Transformação e Carga), para movimentar dados entre diferentes fontes e destinos?",
+    options: [
+      "A. Amazon EMR",
+      "B. AWS Glue",
+      "C. Amazon Managed Streaming for Apache Kafka (Amazon MSK)",
+      "D. AWS Data Exchange",
+    ],
+    correctAnswer: "D. AWS Data Exchange",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "19. Você está buscando um serviço da AWS que forneça gerenciamento centralizado de identidades e acesso para seus usuários, permitindo uma autenticação única para várias aplicações na nuvem. Qual serviço da AWS atenderia a essa necessidade?",
+    options: [
+      "A. AWS IAM Identity Center (AWS Single Sign-On)",
+      "B. AWS Key Management Service (AWS KMS)",
+      "C. AWS Network Firewall",
+      "D. AWS Elastic Disaster Recovery",
+    ],
+    correctAnswer: "B. AWS Key Management Service (AWS KMS)",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "20. A Vercoza's Corp é um serviço da AWS que ajuda a otimizar a infraestrutura de computação, sugerindo recomendações para dimensionamento adequado de recursos de computação EC2. Qual serviço AWS é adequado para esta recomendações?",
+    options: [
+      "A. AWS Trusted Advisor",
+      "B. AWS Glue",
+      "C. AWS Compute Optimizer",
+      "D. Amazon Athena",
+    ],
+    correctAnswer: "A. AWS Trusted Advisor",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "21. Você está gerenciando a transferência de grandes quantidades de dados para a AWS e precisa de um dispositivo físico para ajudar na migração. Qual serviço da AWS fornece dispositivos físicos para transferência de dados?",
+    options: [
+      "A. AWS Well-Architected Tool",
+      "B. AWS Schema Conversion Tool (AWS SCT)",
+      "C. Família AWS Snow",
+      "D. AWS Transfer Family",
+    ],
+    correctAnswer: "C. Família AWS Snow",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "22. Como podemos mitigar os problemas de indisponibilidade em uma aplicação web decorrentes de bots e automações maliciosas?",
+    options: [
+      "A. Habilitando o AWS WAF",
+      "B. Habilitando ovAWS CloudFront",
+      "C. Habilitando o AWS Shield",
+      "D. Habilitando o AWS Certificate Manager",
+    ],
+    correctAnswer: "A. Habilitando o AWS WAF",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "23. Você está criando uma aplicação e fará uso de uma base de dados no modelo chave e valor. A chave será o CPF e o valor será um arquivo Json não estruturado, com diversas informações associadas ao CPF do cliente. Qual é o banco de dados pode ser usado para atender esse cenário?",
+    options: [
+      "A. Amazon RDS for MySQL",
+      "B. Oracle",
+      "C. MariaDB",
+      "D. Amazon DynamoDB",
+    ],
+    correctAnswer: "D. Amazon DynamoDB",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "24. Qual aspecto da infraestrutura da AWS fornece implementação global de computação e armazenamento?",
+    options: [
+      "A. Várias zonas de disponibilidade em uma região da AWS",
+      "B. Várias regiões AWS",
+      "C. Tags",
+      "D. Resoruce Groups",
+    ],
+    correctAnswer: "A. Várias zonas de disponibilidade em uma região da AWS",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "25. Qual serviço da AWS oferece uma solução centralizada para gerenciar regras de segurança de firewall em várias contas e recursos na nuvem, permitindo que as organizações apliquem políticas de segurança de maneira consistente?",
+    options: [
+      "A. AWS Security Hub",
+      "B. AWS Firewall Manager",
+      "C. Elastic Load Balancing (ELB)",
+      "D. AWS GuardDuty",
+    ],
+    correctAnswer: "B. AWS Firewall Manager",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "26. Para acessar um ambiente de linha de comando interativo e prontamente configurado na AWS, onde você pode executar comandos sem a necessidade de instalar ou configurar nada localmente, qual serviço você usaria?",
+    options: [
+      "A. AWS Local Zones",
+      "B. AWS CLI",
+      "C. AWS Cloud9",
+      "D. AWS CloudShell",
+    ],
+    correctAnswer: "D. AWS CloudShell",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "27. Selecione a seguir quais as opções que são vantagens ao utilizar a Nuvem AWS? (Selecione duas respostas.)",
+    options: [
+      "A. A AWS gerencia a manutenção da infraestrutura de nuvem",
+      "B. A AWS gerencia a segurança de aplicações criadas na AWS",
+      "C. A AWS gerencia o planejamento de capacidade para servidores físicos",
+      "D. A AWS gerencia o desenvolvimento de aplicações na AWS",
+      "E. A AWS gerencia o planejamento de custos para servidores virtuais",
+    ],
+    correctAnswer: [
+      "A. A AWS gerencia a manutenção da infraestrutura de nuvem",
+      "C. A AWS gerencia o planejamento de capacidade para servidores físicos",
+    ],
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: true
+  },
+  {
+    question: "28. A empresa em que você trabalha atualmente pretende trabalhar com aprendizado de máquina (ML - Machine Learning), para identificar atividades suspeitas que possam ser realizadas em seu ambiente AWS que roda o Amazon EKS. Qual seria o serviço da AWS mais indicado para ajudar a atender esse objetivo?",
+    options: [
+      "A. AWS Macie",
+      "B. AWS Detective",
+      "C. AWS WAF",
+      "D. AWS Shield",
+    ],
+    correctAnswer: "B. AWS Detective",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "29. Você está trabalhando em uma aplicação em que vários desenvolvedores precisam colaborar em tempo real, editando código e compartilhando recursos. Qual serviço da AWS oferece um ambiente de desenvolvimento colaborativo e baseado em nuvem para essa finalidade?",
+    options: [
+      "A. AWS Local Zones",
+      "B. AWS CLI",
+      "C. AWS Cloud9",
+      "D. AWS CloudShell",
+    ],
+    correctAnswer: "C. AWS Cloud9",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "30. Qual o serviço da AWS que oferece uma solução totalmente gerenciada e altamente escalável para armazenar e processar dados na memória, com suporte para caches, aplicações em tempo real e muito mais?",
+    options: [
+      "A. Amazon Aurora",
+      "B. Amazon MemoryDB para Redis",
+      "C. Amazon RDS",
+      "D. Amazon DynamoDB",
+    ],
+    correctAnswer: "B. Amazon MemoryDB para Redis",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "31. Você está trabalhando em um projeto de modernização da arquitetura do e-commerce da Vercoza's Corp, a demanda de requisições vem crescendo bastante à medida que aumentamos as vendas e a quantidade de usuários online no site da empresa. O líder de arquitetura das aplicações deseja implementar um novo recurso baseado em armazenamento em memória, com a finalidade de acelerar algumas consultas existentes na aplicação. Qual serviço da AWS pode apoiar o arquiteto de aplicações nesse contexto?",
+    options: [
+      "A. Amazon RDS",
+      "B. Amazon Timestream",
+      "C. Amazon DynamoDB",
+      "D. Amazon ElastiCache",
+    ],
+    correctAnswer: "D. Amazon ElastiCache",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "32. A Vercoza's Corp está buscando uma maneira de gerenciar várias contas de forma centralizada, controlando o acesso às contas e aplicações. Eles também desejam permitir a integração com sua fonte de identidade, o Google Workspace, como o Microsoft Active Directory e o Azure Active Directory. Qual serviço da AWS pode ser utilizado para esse propósito?",
+    options: [
+      "A. AWS IAM Identity Center",
+      "B. AWS Identity Broker",
+      "C. AWS Security Hub",
+      "D. AWS Organizations",
+    ],
+    correctAnswer: "A. AWS IAM Identity Center",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "33. A área de análise de dados da Vercoza's Corp precisa realizar o cruzamento de vários dados estruturado e semi estruturados para gerar insights para uma campanha de venda. Qual serviço pode ser utilizado?",
+    options: [
+      "A. Amazon RedShift",
+      "B. Power BI",
+      "C. Amazon Kinesis",
+      "D. Amazon EMR",
+    ],
+    correctAnswer: "A. Amazon RedShift",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "34. Uma de tecnologia utiliza bancos de dados relacionais MySQL para aplicações críticas que estão apresentando problemas de lentidão. Como é possível melhorar essa solução?",
+    options: [
+      "A. Migrando os bancos de dados para o DynamoDb",
+      "B. Migrando os bancos de dados para o MariaDb",
+      "C. Migrando os bancos de dados para o Aurora",
+      "D. Migrando os bancos de dados para o Neptune",
+    ],
+    correctAnswer: "C. Migrando os bancos de dados para o Aurora",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "35. Para fornecer conectividade segura entre sua rede local e a AWS, permitindo que sua equipe acesse recursos na nuvem de forma privada, qual serviço da AWS você utilizaria?",
+    options: [
+      "A. AWS Global Accelerator",
+      "B. AWS VPN",
+      "C. AWS Audit Manager",
+      "D. AWS Directory Service",
+    ],
+    correctAnswer: "B. AWS VPN",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "36. A organização em que você está empregado está experimentando um crescimento contínuo, incorporando novos colaboradores quase semanalmente. Quais são as melhores práticas recomendadas para gerenciar os acessos à conta da AWS nesse cenário?",
+    options: [
+      "A. Incluindo os novos colaboradores através dos grupos de usuários do IAM, seguindo o principio de previlégio mínimo",
+      "B. Incluindo os novos colaboradores através do CloudFront, gerando as políticas de previlégio",
+      "C. Incluindo os novos colaboradores através do EC2, em grupos do EC2",
+      "D. Incluindo os novos colaboradores através do S3, criando as SCPs",
+    ],
+    correctAnswer: "A. Incluindo os novos colaboradores através dos grupos de usuários do IAM, seguindo o principio de previlégio mínimo",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "37. Em uma startup em crescimento, você precisa de um programa de suporte técnico especializado para obter orientação e assistência em questões técnicas complexas. Qual serviço da AWS oferece acesso a uma rede de especialistas prontos para ajudar?",
+    options: [
+      "A. AWS CodeArtifact",
+      "B. AWS X-Ray",
+      "C. Amazon WorkSpaces Web",
+      "D. AWS IQ",
+      "E. Você como responsável do time de operações da Vercoza's Corp Café Express, precisa controlar e aplicar os patches de segurança nos servidores da empresa. Existe uma preocupação de que os servidores não fiquem vulneráveis e estejam sempre atualizados.",
+    ],
+    correctAnswer: "D. AWS IQ",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "38. Pensando no Modelo de Responsabilidade Compartilhada, o cliente é responsável por esse tipo de aplicação de patches de segurança em quais serviços?",
+    options: [
+      "A. Instâncias do Amazon EC2",
+      "B. Instâncias do Amazon RDS",
+      "C. Amazon DynamoDB",
+      "D. Amazon S3",
+      "E. A Vercoza's Corp roda sua aplicação em uma instância Amazon EC2. O servidor de aplicações precisa acessar o conteúdo em um bucket privado do Amazon S3.",
+    ],
+    correctAnswer: "A. Instâncias do Amazon EC2",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "39. Qual a abordagem estaria em compliance com as práticas recomendadas da AWS?",
+    options: [
+      "A. Crie uma IAM role com as permissões apropriadas. Associe a role à instância EC2",
+      "B. Configure uma conexão de peering de VPC para permitir a comunicação privada entre a instância EC2 e o bucket do S3",
+      "C. Crie uma chave de acesso compartilhada. Configure a instância EC2 para usar a chave codificada",
+      "D. Configure a aplicação para ler uma chave de acesso de uma fonte segura",
+    ],
+    correctAnswer: "A. Crie uma IAM role com as permissões apropriadas. Associe a role à instância EC2",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "40. Em um projeto de migração para a AWS, seu diretor solicitou uma estimativa de custo da infraestrutura que será utilizada para executar as cargas de trabalho da sua área de negócio. Qual serviço pode te auxiliar com esse pedido?",
+    options: [
+      "A. AWS Pricing Calculator",
+      "B. AWS Budgets",
+      "C. AWS Cost Explorer",
+      "D. AWS Organizations",
+    ],
+    correctAnswer: "A. AWS Pricing Calculator",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "41. Para assegurar uma escalabilidade e equilíbrio eficazes da infraestrutura de sua aplicação em um ambiente de nuvem, é fundamental selecionar os serviços apropriados. Considerando essa necessidade, quais dois serviços abaixo seriam ideais para alcançar esses objetivos?(Escolha 2 alternativas).",
+    options: [
+      "A. AWS CloudFormation",
+      "B. Amazon ElastiCache",
+      "C. Amazon CloudFront",
+      "D. Amazon Elastic Load Balancer (ELB)",
+      "E. Amazon EC2 Auto Scaling",
+    ],
+    correctAnswer: [
+      "D. Amazon Elastic Load Balancer (ELB)",
+      "E. Amazon EC2 Auto Scaling",
+    ],
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: true
+  },
+  {
+    question: "42. Qual serviço AWS é usado para análise e reconhecimento de objetos, pessoas, texto e outras informações em imagens e vídeos?",
+    options: [
+      "A. Amazon Rekognition",
+      "B. Amazon Neptune",
+      "C. AWS AppConfig",
+      "D. AWS CLI",
+    ],
+    correctAnswer: "A. Amazon Rekognition",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "43. Qual é o pilar do Well-Architected Framework, que busca minimizar os impactos ambientais da execução de workloads em nuvem, através de um modelo de responsabilidade compartilhada para compreensão e maximização da utilização dos recursos necessários para redução de impactos posteriores?",
+    options: [
+      "A. Excelencia Operacional",
+      "B. Confiabilidade",
+      "C. Eficiência de Performance",
+      "D. Sustentabilidade",
+    ],
+    correctAnswer: "D. Sustentabilidade",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "44. Suponha que você seja responsável pela operação de um ambiente na AWS, agora você necessita se conectar a partir da sua estação de trabalho, via acesso programático a sua conta da AWS. O que você precisaria para configurar o AWS CLI e se conectar na conta de forma programática? (Selecione duas opções)",
+    options: [
+      "A. Access key",
+      "B. Primary key",
+      "C. User ID",
+      "D. Secret access key",
+      "E. Secondary key",
+    ],
+    correctAnswer: [
+      "A. Access key",
+      "D. Secret access key",
+    ],
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: true
+  },
+  {
+    question: "45. Qual das opções a seguir exemplifica uma prática recomendada de segurança que pode ser implementada por meio do AWS Identity and Access Management (IAM)?",
+    options: [
+      "A. Desativar o acesso ao Console de Gerenciamento da AWS para todos os usuários",
+      "B. Gerar chave de acesso de seu usuário do IAM",
+      "C. Conceda apenas as permissões necessárias para que os usuários possam executar uma tarefa específica",
+      "D. Armazenar credenciais da AWS em instâncias Amazon EC2",
+    ],
+    correctAnswer: "C. Conceda apenas as permissões necessárias para que os usuários possam executar uma tarefa específica",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "46. Durante períodos de pico, uma aplicação precisa que novas instâncias EC2 sejam provisionadas para suportar toda a carga de trabalho. Após esse período, as instâncias precisam ser desprovisionadas, permitindo assim, que os recursos sejam utilizados sob demanda. Como esse processo pode ser implementado e automatizado?",
+    options: [
+      "A. Com o uso do Amazon Elastic Container Service (Amazon ECS)",
+      "B. Com o uso do Amazon Elastic Load Balancer (ELB)",
+      "C. Com o uso do AWS Auto Scalling",
+      "D. Com o uso do AWS Fargate",
+    ],
+    correctAnswer: "C. Com o uso do AWS Auto Scalling",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "47. Você foi contratado para realizar a configuração da conta AWS de um cliente, é esperado que os usuários sejam agrupados em grupos de permissões para facilitar a aplicação e controle de políticas. Exemplo, o time de Administradores de Infra, Desenvolvedores e Testes, devem receber políticas personalizadas de acordo com sua função. Qual serviço você pode usar para cumprir esta tarefa facilitando o gerenciamento dos usuários?",
+    options: [
+      "A. AWS Identity and Access Management (IAM)",
+      "B. AWS Organizations",
+      "C. Resource Groups",
+      "D. Resource Tagging",
+    ],
+    correctAnswer: "A. AWS Identity and Access Management (IAM)",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "48. A Vercoza's Corp precisa de uma solução para personalizar a tradução automática de termos específicos, como nomes de marca e modelos exclusivos, em vários idiomas. Além disso, eles desejam ter a flexibilidade de atualizar essa tradução personalizada com frequência e pagando apenas pelo número de caracteres traduzidos. Qual serviço da AWS oferece essa capacidade?",
+    options: [
+      "A. Amazon Transcribe",
+      "B. Amazon OpenSearch Service",
+      "C. AWS Launch Wizard",
+      "D. Amazon Translate",
+    ],
+    correctAnswer: "D. Amazon Translate",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "49. Você precisa implementar uma rede social que permita a conexão dos colaboradores através de grafos. Com qual banco de dados da AWS é possível realizar essa implementação?",
+    options: [
+      "A. Amazon JanusGraph",
+      "B. Amazon Graph",
+      "C. Amazon Neo4j",
+      "D. Amazon Neptune",
+    ],
+    correctAnswer: "D. Amazon Neptune",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "50. Sua equipe foi designada para criar um chat interativo de alta qualidade, com uma central de atendimento omnichanel para oferecer suporte aos seus clientes de qualquer lugar do mundo. Com qual serviço posso utilizar para atender este requisito?",
+    options: [
+      "A. Amazon Cognito",
+      "B. AWS Direct Connect",
+      "C. Amazon CloudFront",
+      "D. Amazon Connect",
+    ],
+    correctAnswer: "D. Amazon Connect",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "51. Você está trabalhando em um projeto de análise de arquitetura na AWS e deseja avaliar a eficácia da sua infraestrutura em relação às melhores práticas recomendadas. Qual serviço da AWS você usaria para realizar essa análise?",
+    options: [
+      "A. AWS Well-Architected Tool",
+      "B. AWS Schema Conversion Tool (AWS SCT)",
+      "C. Família AWS Snow",
+      "D. AWS Transfer Family",
+    ],
+    correctAnswer: "A. AWS Well-Architected Tool",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "52. De acordo com o modelo de responsabilidade compartilhada da AWS. Qual das seguintes opções a seguir é uma responsabilidade da AWS?",
+    options: [
+      "A. Projetar a aplicação de um cliente para recuperação de desastres",
+      "B. Atualizar os sistemas operacionais convidados em instâncias Amazon EC2 implantadas",
+      "C. Configurar novos recursos em uma conta da AWS",
+      "D. Proteger a infraestrutura física",
+    ],
+    correctAnswer: "D. Proteger a infraestrutura física",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "53. A Vercoza's Corp para receber um novo aporte precisa ficar em compliance com regras de segurança de um grupo de investidores e para tal necessita de uma conexão privada dedicada entre suas operações locais e a Nuvem AWS. Qual recurso ou produto da AWS fornecerá essa conexão?",
+    options: [
+      "A. AWS VPN",
+      "B. AWS PrivateLink",
+      "C. VPC endpoint",
+      "D. AWS Direct Connect",
+    ],
+    correctAnswer: "D. AWS Direct Connect",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "54. Em um cenário em que você precisa de suporte técnico especializado para resolver problemas complexos com sua infraestrutura na AWS, qual serviço você usaria para obter assistência direta dos engenheiros da AWS?",
+    options: [
+      "A. AWS Managed Services (AMS)",
+      "B. AWS Support",
+      "C. AWS Amplify",
+      "D. AWS AppSync",
+    ],
+    correctAnswer: "B. AWS Support",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "55. Você atua como Cloud Engineer e precisa rastrear custos de uso da conta AWS. Também é solicitado a criar alarmes de billing com valores específicos para envio de notificações. Qual ferramenta atende este cenário?",
+    options: [
+      "A. AWS Cost and Usage Reports",
+      "B. Tags de Alocação de Custos da AWS",
+      "C. Explorador de Custos da AWS",
+      "D. AWS Budgets (Orçamentos)",
+    ],
+    correctAnswer: "D. AWS Budgets (Orçamentos)",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "56. Qual serviço da AWS é utilizado para configurar e gerenciar clusters Apache Kafka, totalmente gerenciados na nuvem AWS?",
+    options: [
+      "A. Amazon EMR",
+      "B. AWS Glue",
+      "C. AWS Data Exchange",
+      "D. Amazon Managed Streaming for Apache Kafka (Amazon MSK)",
+    ],
+    correctAnswer: "D. Amazon Managed Streaming for Apache Kafka (Amazon MSK)",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "57. A Vercoza's Corp está buscando uma solução para gerenciar sua infraestrutura na AWS de forma simplificada e otimizada. Qual serviço da AWS fornece gerenciamento totalmente gerenciado de infraestrutura na nuvem?",
+    options: [
+      "A. AWS Managed Services (AMS)",
+      "B. AWS Support",
+      "C. AWS Amplify",
+      "D. AWS AppSync",
+    ],
+    correctAnswer: "A. AWS Managed Services (AMS)",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "58. A Vercoza's Corp esta desenvolvendo uma aplicação que necessita de uma solução de armazenamento de arquivos compartilhados, simples e escalável para usar com servidores locais e instâncias Amazon EC2 baseadas em Linux. Qual serviço da AWS atenderia estes requisitos?",
+    options: [
+      "A. AWS Managed Services (AMS)",
+      "B. Amazon S3 Glacier",
+      "C. Amazon Elastic Block Store (Amazon EBS)",
+      "D. Amazon Elastic File System (Amazon EFS)",
+    ],
+    correctAnswer: "D. Amazon Elastic File System (Amazon EFS)",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "59. Qual serviço da AWS é usado para automatizar a descoberta de aplicações, servidores e dependências em ambientes locais, facilitando o planejamento de migração para a nuvem?",
+    options: [
+      "A. AWS Application Discovery Service",
+      "B. Amazon API Gateway",
+      "C. AWS Organizations",
+      "D. AWS Compute Optimizer",
+    ],
+    correctAnswer: "A. AWS Application Discovery Service",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "60. Você está gerenciando um novo projeto de uma aplicação que sintetiza texto em fala humana natural. Qual serviço da AWS poderia ser usado para reduzir o tempo de implementação e entregar uma melhor experiência ao usuário?",
+    options: [
+      "A. Amazon Kinesis",
+      "B. Amazon Polly",
+      "C. Amazon Transcribe",
+      "D. AWS Glue",
+    ],
+    correctAnswer: "B. Amazon Polly",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "61. Você foi contratado como Arquiteto de Cloud para criar uma aplicação de IoT que seja construída rapidamente usando componentes modulares pré-construídos ou personalizados. A aplicação precisa permitir a implantação e gerenciamento do software e a configuração do dispositivo remotamente e em escala, sem a necessidade de atualizações de firmware. Qual serviço da AWS é o mais indicado para essa implementação?",
+    options: [
+      "A. AWS Lambda",
+      "B. Amazon RDS",
+      "C. AWS RoboMaker",
+      "D. AWS IoT Greengrass",
+    ],
+    correctAnswer: "D. AWS IoT Greengrass",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "62. A empresa em que você trabalha teve um incidente físico no prédio onde fica o escritório corporativo e as máquinas fixas de trabalho de seus colaboradores. Nesse momento a empresa precisa de uma alternativa para que os seus desenvolvedores possam continuar trabalhando de casa em suas máquinas pessoais. O CTO da empresa consultou sua equipe para saber se existem algum serviço como uma IDE na nuvem em que seus desenvolvedores possam se conectar e seguir trabalhando remotamente de casa. Qual serviço a AWS melhor atenderia esse cenário?",
+    options: [
+      "A. AWS OpsWorks",
+      "B. AWS CodeBuild",
+      "C. AWS Cloud9",
+      "D. AWS Cloud Development Kit (AWS CDK)",
+    ],
+    correctAnswer: "C. AWS Cloud9",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "63. Em um projeto de análise de dados em tempo real, você precisa de um banco de dados altamente escalável e totalmente gerenciado para armazenar seus dados em grafo. Qual serviço da AWS você escolheria?",
+    options: [
+      "A. AWS Local Zones",
+      "B. Elastic Container Registry (Amazon ECR)",
+      "C. Amazon MemoryDB para Redis",
+      "D. Amazon Neptune",
+    ],
+    correctAnswer: "D. Amazon Neptune",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+  {
+    question: "64. Uma companhia multinacional de seguros decide migrar seu Data Warehouse do ambiente local (onpremise) para a AWS. Mensalmente essa base de dados cresce devido ao alto fluxo de informações processadas. Atualmente esse Data Warehouse é utilizado para alimentar os Dashboards Analíticos da companhia. Qual serviço da AWS é mais indicado para suportar o Data Warehouse?",
+    options: [
+      "A. Amazon RDS",
+      "B. Amazon Aurora",
+      "C. Amazon ElastiCache",
+      "D. Amazon Redshift",
+    ],
+    correctAnswer: "D. Amazon Redshift",
+    explanation: "NO MOMENTO SEM EXPLICAÇÃO",
+    multiSelect: false
+  },
+];
+        let selectedOptions = [];
+        let currentQuizQuestions = [];
+        let timer;
+        let timeLeft;
+        let incorrectQuestions = [];
+        let correctQuestions = [];
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function startQuiz(numberOfQuestions, duration) {
+            clearInterval(timer);
+            document.getElementById('startScreen').classList.add('hidden');
+            document.getElementById('quizContainer').classList.remove('hidden');
+            const shuffledQuestions = shuffleArray([...questions]);
+            currentQuizQuestions = shuffledQuestions.slice(0, numberOfQuestions);
+            timeLeft = duration * 60; 
+            loadQuestion(currentQuestionIndex);
+            startTimer();
+        }
+
+        function loadQuestion(questionIndex) {
+            const question = currentQuizQuestions[questionIndex];
+            selectedOptions = [];
+            document.getElementById('questionText').innerHTML = question.question;
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            question.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.classList.add('option');
+                button.innerHTML = option;
+                button.onclick = () => toggleOption(option);
+                optionsContainer.appendChild(button);
+            });
+            const confirmButton = document.createElement('button');
+            confirmButton.innerHTML = 'CONFIRMAR';
+            confirmButton.onclick = () => {
+                checkAnswer(question.correctAnswer, question.explanation);
+            };
+            confirmButton.classList.add('next-question-btn');
+            confirmButton.setAttribute('id', 'confirmButton');
+            optionsContainer.appendChild(confirmButton);
+            document.getElementById('answerScreen').classList.add('hidden');
+            document.getElementById('previousQuestionBtn').style.display = (questionIndex === 0) ? 'none' : 'inline-block';
+            updateProgress();
+        }
+
+        function toggleOption(option) {
+            const optionIndex = selectedOptions.indexOf(option);
+            if (optionIndex < 0) {
+                selectedOptions.push(option);
+            } else {
+                selectedOptions.splice(optionIndex, 1);
+            }
+            updateOptionButtons();
+            document.getElementById('confirmButton').style.display = selectedOptions.length > 0 ? 'block' : 'none';
+        }
+
+        function updateOptionButtons() {
+            document.querySelectorAll('.option').forEach(button => {
+                if (selectedOptions.includes(button.innerText)) {
+                    button.classList.add('selected');
+                } else {
+                    button.classList.remove('selected');
+                }
+            });
+        }
+
+        function checkAnswer(correctAnswer, explanation) {
+            const isCorrect = Array.isArray(correctAnswer) ?
+                correctAnswer.sort().join(',') === selectedOptions.sort().join(',') :
+                selectedOptions.includes(correctAnswer);
+
+            const question = currentQuizQuestions[currentQuestionIndex];
+
+            if (isCorrect) {
+                correctAnswersCount++;
+                document.getElementById('feedbackText').innerHTML = "CORRETO!";
+                document.getElementById('answerExplanation').className = 'answer-container correct';
+                correctQuestions.push(question);
+            } else {
+                document.getElementById('feedbackText').innerHTML = "INCORRETO!";
+                document.getElementById('answerExplanation').className = 'answer-container incorrect';
+                incorrectQuestions.push(question);
+            }
+            document.getElementById('correctAnswerText').innerHTML = `A resposta correta é: ${Array.isArray(correctAnswer) ? correctAnswer.join(', ') : correctAnswer}<br>${explanation}`;
+            document.getElementById('answerScreen').classList.remove('hidden');
+            document.getElementById('confirmButton').style.display = 'none';
+
+            currentQuestionIndex++;
+
+            updateProgress();
+        }
+
+        function loadNextQuestion() {
+            if (currentQuestionIndex < currentQuizQuestions.length) {
+                loadQuestion(currentQuestionIndex);
+            } else {
+                endQuiz();
+            }
+        }
+
+        function loadPreviousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion(currentQuestionIndex);
+            }
+        }
+
+        function updateProgress() {
+            const progressPercent = Math.round((correctAnswersCount / currentQuizQuestions.length) * 100);
+            document.getElementById('progressBar').style.width = progressPercent + "%";
+            document.getElementById('progressText').innerText = `${progressPercent}% de acertos - Questão ${currentQuestionIndex + 1}/${currentQuizQuestions.length}`;
+        }
+
+        function startTimer() {
+            timer = setInterval(updateTimer, 1000);
+        }
+
+        function updateTimer() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            const formattedTime = `${padZero(minutes)}:${padZero(seconds)}`;
+
+            document.getElementById("timeLeft").textContent = formattedTime;
+
+            if (timeLeft === 0) {
+                clearInterval(timer);
+                endQuiz();
+            }
+
+            timeLeft--;
+        }
+
+        function padZero(number) {
+            return number < 10 ? "0" + number : number;
+        }
+
+        function endQuiz() {
+            clearInterval(timer);
+            document.getElementById('quizContainer').classList.add('hidden');
+document.getElementById('finalScreen').classList.remove('hidden');
+showFinalMessage();
+}
+function showFinalMessage() {
+        const finalScore = document.getElementById('finalScore');
+        const percentage = (correctAnswersCount / currentQuizQuestions.length) * 100;
+        finalScore.textContent = `Sua pontuação final é: ${percentage.toFixed(2)}%`;
+
+        const finalMessage = document.getElementById('finalMessage');
+        const successMessage = "PARABÉNS! VOCÊ ESTÁ NO CAMINHO CERTO!";
+        const encouragementMessage = "NÃO FOI DESSA VEZ. MAS NÃO DESANIME. A PRÁTICA RECOMPENSA OS FORTES!";
+        finalMessage.textContent = percentage >= 70 ? successMessage : encouragementMessage;
+    }
+
+    function showQuestionReview(reviewType) {
+        const questionDetails = document.getElementById('questionDetails');
+        questionDetails.innerHTML = '';
+
+        if (reviewType === 'incorrect') {
+            incorrectQuestions.forEach(question => {
+                const questionDiv = document.createElement('div');
+                questionDiv.innerHTML = `
+                    <h3>Pergunta: ${question.question}</h3>
+                    <p><strong>Opções:</strong></p>
+                    <ul>
+                        ${question.options.map(option => `<li>${option}</li>`).join('')}
+                    </ul>
+                    <p><strong>Resposta correta:</strong> ${question.correctAnswer}</p>
+                    <p><strong>Explicação:</strong> ${question.explanation}</p>
+                `;
+                questionDetails.appendChild(questionDiv);
+            });
+        } else if (reviewType === 'correct') {
+            correctQuestions.forEach(question => {
+                const questionDiv = document.createElement('div');
+                questionDiv.innerHTML = `
+                    <h3>Pergunta: ${question.question}</h3>
+                    <p><strong>Opções:</strong></p>
+                    <ul>
+                        ${question.options.map(option => `<li>${option}</li>`).join('')}
+                    </ul>
+                    <p><strong>Resposta correta:</strong> ${question.correctAnswer}</p>
+                    <p><strong>Explicação:</strong> ${question.explanation}</p>
+                `;
+                questionDetails.appendChild(questionDiv);
+            });
+        }
+    }
+
+    function restartQuiz() {
+        currentQuestionIndex = 0;
+        correctAnswersCount = 0;
+        timeLeft = 0;
+        incorrectQuestions = [];
+        correctQuestions = [];
+        document.getElementById('finalScreen').classList.add('hidden');
+        document.getElementById('startScreen').classList.remove('hidden');
+        document.getElementById('questionDetails').innerHTML = '';
+    }
+
+    function restartQuizFromQuiz() {
+        currentQuestionIndex = 0;
+        correctAnswersCount = 0;
+        timeLeft = 0;
+        incorrectQuestions = [];
+        correctQuestions = [];
+        document.getElementById('quizContainer').classList.add('hidden');
+        document.getElementById('startScreen').classList.remove('hidden');
+        document.getElementById('questionDetails').innerHTML = '';
+    }
+</script>
+
+</body> </html> 
